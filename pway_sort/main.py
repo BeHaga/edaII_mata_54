@@ -84,10 +84,31 @@ def parses_generator(runs, p):
     parses = ceil(log(runs, p))
     return parses
 
+def p_way_merge(lista_run, regs):
+    resultado_ordenado = []
+    posicoes = [0] * len(lista_run)
+
+    while len(resultado_ordenado) < regs:
+        menor_valor = None
+        idx_menor = -1
+
+        for idx, run in enumerate(lista_run):
+            pos = posicoes[idx]
+            if pos < len(run):
+                valor_atual = run[pos]
+                if menor_valor is None or valor_atual < menor_valor:
+                    menor_valor = valor_atual
+                    idx_menor = idx
+
+        resultado_ordenado.append(menor_valor)
+        posicoes[idx_menor] += 1
+
+    return resultado_ordenado
+
 def write_output_file(output_file, registros):
     with open(output_file, 'w') as f:
         for reg in registros:
-            f.write(f"{reg}\n")
+            f.write(' '.join(str(reg) for reg in registros))
 
 def main():
     p, input_file, output_file = parse_args()
@@ -95,6 +116,9 @@ def main():
     regs = len(registros)
     runs, lista_run = run_generator(p,registros)
     parses = parses_generator(runs, p)
+    ordenado_final = p_way_merge(lista_run, regs)
+    write_output_file(output_file, ordenado_final)
+    print(ordenado_final)
     print(f"#Regs Ways #Runs Parses")
     print(f"{regs}  {p}    {runs}    {parses}")
 
