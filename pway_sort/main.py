@@ -66,7 +66,7 @@ def run_generator(p, registros, lista_run = None):
         lista_run.append(run)
         restante = next_run+registros_restantes
             
-    # print(f"lista_run = {lista_run}") 
+    # print(f"lista_run = {lista_run}")
     return len(lista_run), lista_run
 
 def retorna_pos_menor(heap):
@@ -107,8 +107,7 @@ def p_way_merge(lista_run, regs):
 
 def write_output_file(output_file, registros):
     with open(output_file, 'w') as f:
-        for reg in registros:
-            f.write(' '.join(str(reg) for reg in registros))
+        f.write(' '.join(str(reg) for reg in registros))
 
 def main():
     p, input_file, output_file = parse_args()
@@ -118,7 +117,7 @@ def main():
     parses = parses_generator(runs, p)
     ordenado_final = p_way_merge(lista_run, regs)
     write_output_file(output_file, ordenado_final)
-    print(ordenado_final)
+    # print(ordenado_final)
     print(f"#Regs Ways #Runs Parses")
     print(f"{regs}  {p}    {runs}    {parses}")
 
