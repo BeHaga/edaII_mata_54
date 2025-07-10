@@ -1,6 +1,7 @@
 import sys
 import os
 import tempfile
+from math import log, ceil
 
 def parse_args():
     if len(sys.argv) != 4:
@@ -31,40 +32,41 @@ def read_input_file(input_file):
 def run_generator(p, registros, lista_run = None):
     if lista_run is None:
         lista_run = []
-    heap = registros[:p]
-    registros_restantes = registros[p:]
-    run = []
-    next_run = []
-    while len(heap) != 0:        
-        pos_menor = retorna_pos_menor(heap)
-        if (len(run) == 0) or (heap[pos_menor] >= run[-1]):
-            run.append(heap[pos_menor])
-        else:
-            next_run.append(heap[pos_menor])
-        menor = heap[pos_menor]
-        print("menor=", menor)
-        print("run=", run)
-        if len(registros_restantes) != 0:
-            proximo = registros_restantes[0]
-            print("próximo=", proximo)
-        del heap[pos_menor]
-        # if len(heap) == 0:
-        #     break
-        # pos_menor = retorna_pos_menor(heap)
-        if len(registros_restantes) != 0:
-            if (proximo >= menor):
-                heap.append(proximo)
-                print(f"{proximo} entra na heap")
+    restante = registros
+    while restante:
+        heap = restante[:p]
+        registros_restantes = restante[p:]
+        run = []
+        next_run = []
+
+        while len(heap) != 0:        
+            pos_menor = retorna_pos_menor(heap)
+            if (len(run) == 0) or (heap[pos_menor] >= run[-1]):
+                run.append(heap[pos_menor])
             else:
-                next_run.append(proximo)
-                print(f"{proximo} vai para next_run")
-            del registros_restantes[0]            
-            print(f"heap={heap}")
-    print("-----------------RUN GERADA-----------------")
-    lista_run.append(run)
-    if len(next_run) != 0:
-        run_generator(p, next_run+registros_restantes, lista_run)
-    print(f"lista_run = {lista_run}") 
+                next_run.append(heap[pos_menor])
+            menor = heap[pos_menor]
+            # print("menor=", menor)
+            # print("run=", run)
+            if len(registros_restantes) != 0:
+                proximo = registros_restantes[0]
+                # print("próximo=", proximo)
+            del heap[pos_menor]
+            if len(registros_restantes) != 0:
+                if (proximo >= menor):
+                    heap.append(proximo)
+                    # print(f"{proximo} entra na heap")
+                else:
+                    next_run.append(proximo)
+                    # print(f"{proximo} vai para next_run")
+                del registros_restantes[0]            
+                # print(f"heap={heap}")
+
+        # print("-----------------RUN GERADA-----------------")
+        lista_run.append(run)
+        restante = next_run+registros_restantes
+            
+    # print(f"lista_run = {lista_run}") 
     return len(lista_run), lista_run
 
 def retorna_pos_menor(heap):
@@ -78,9 +80,9 @@ def retorna_pos_menor(heap):
             pos = i
     return pos
 
-def parses_generator(lista_run):
-    lista_run = lista_run
-    return "parses"
+def parses_generator(runs, p):
+    parses = ceil(log(runs, p))
+    return parses
 
 def write_output_file(output_file, registros):
     with open(output_file, 'w') as f:
@@ -92,7 +94,7 @@ def main():
     registros = read_input_file(input_file)
     regs = len(registros)
     runs, lista_run = run_generator(p,registros)
-    parses = parses_generator(lista_run)
+    parses = parses_generator(runs, p)
     print(f"#Regs Ways #Runs Parses")
     print(f"{regs}  {p}    {runs}    {parses}")
 
